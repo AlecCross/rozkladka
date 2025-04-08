@@ -1,0 +1,48 @@
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .languageSwitch { 
+    margin-bottom: 10px;
+    align-self: flex-start;
+  }
+  
+  .textarea {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0070f3;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+  
+  .checkbox {
+    margin-top: 10px;
+  }
+  
