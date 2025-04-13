@@ -45,6 +45,15 @@ export default function LayoutConverter() {
       document.execCommand('copy');
     }
   };
+  const handlePaste = async () => { // Додаємо функцію для вставки
+    try {
+      const text = await navigator.clipboard.readText();
+      setInputText(text);
+      setOutputText(convertLayout(text, isUkrainianToEnglish));
+    } catch (err) {
+      console.error('Failed to paste: ', err);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -58,6 +67,7 @@ export default function LayoutConverter() {
           {isUkrainianToEnglish ? 'Англійська → Українська' : 'Українська → Англійська'} {/* Змінюємо назви мов */}
         </label>
       </div>
+      <button onClick={handlePaste} className={styles.button}>Вставити</button> {/* Додаємо кнопку "Вставити" */}
       <textarea
         value={inputText}
         onChange={handleInputChange}
