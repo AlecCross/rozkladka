@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import styles from '../styles/LayoutConverter.module.css'; // Імпорт стилів
+import React, { useState, useRef, useEffect } from 'react'; // Додаємо useEffect
+import styles from '../styles/LayoutConverter.module.css';
 
 const ukrainianToEnglishMap = {
   'й': 'q', 'ц': 'w', 'у': 'e', 'к': 'r', 'е': 't', 'н': 'y', 'г': 'u', 'ш': 'i', 'щ': 'o', 'з': 'p', 'х': '[', 'ї': ']',
@@ -8,6 +8,8 @@ const ukrainianToEnglishMap = {
   'Й': 'Q', 'Ц': 'W', 'У': 'E', 'К': 'R', 'Е': 'T', 'Н': 'Y', 'Г': 'U', 'Ш': 'I', 'Щ': 'O', 'З': 'P', 'Х': '{', 'Ї': '}',
   'Ф': 'A', 'І': 'S', 'В': 'D', 'А': 'F', 'П': 'G', 'Р': 'H', 'О': 'J', 'Л': 'K', 'Д': 'L', 'Ж': ':', 'Є': '"',
   'Я': 'Z', 'Ч': 'X', 'С': 'C', 'М': 'V', 'И': 'B', 'Т': 'N', 'Ь': 'M', 'Б': '<', 'Ю': '>', ',': '?',
+  'ґ': '`', 
+  'Ґ': '~', 
 };
 
 const englishToUkrainianMap = {};
@@ -36,7 +38,6 @@ export default function LayoutConverter() {
   const handleInputChange = (e) => {
     const newText = e.target.value;
     setInputText(newText);
-    setOutputText(convertLayout(newText, isUkrainianToEnglish));
   };
 
   const handleCopy = () => {
@@ -45,29 +46,34 @@ export default function LayoutConverter() {
       document.execCommand('copy');
     }
   };
-  const handlePaste = async () => { // Додаємо функцію для вставки
+
+  const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
       setInputText(text);
-      setOutputText(convertLayout(text, isUkrainianToEnglish));
     } catch (err) {
       console.error('Failed to paste: ', err);
     }
   };
 
+  // useEffect для оновлення outputText при зміні inputText або isUkrainianToEnglish
+  useEffect(() => {
+    setOutputText(convertLayout(inputText, isUkrainianToEnglish));
+  }, [inputText, isUkrainianToEnglish]); // Залежності: useEffect запускається при зміні inputText або isUkrainianToEnglish
+
   return (
     <div className={styles.container}>
-      <div className={styles.languageSwitch}> {/* Додаємо контейнер для перемикання мов */}
+      <div className={styles.languageSwitch}>
         <label>
           <input
             type="checkbox"
             checked={isUkrainianToEnglish}
+            // При зміні чекбоксу, стан оновлюється, і useEffect спрацює
             onChange={() => setIsUkrainianToEnglish(!isUkrainianToEnglish)}
           />
-          {isUkrainianToEnglish ? 'Англійська → Українська' : 'Українська → Англійська'} {/* Змінюємо назви мов */}
+          {isUkrainianToEnglish ? 'Англійська → Українська' : 'Українська → Англійська'}
         </label>
       </div>
-      <button onClick={handlePaste} className={styles.button}>Вставити</button> {/* Додаємо кнопку "Вставити" */}
       <textarea
         value={inputText}
         onChange={handleInputChange}
@@ -75,6 +81,7 @@ export default function LayoutConverter() {
         className={styles.textarea}
       />
       <div className={styles.buttons}>
+        <button onClick={handlePaste} className={styles.button}>Вставити</button>
         <button
           onClick={handleCopy}
           className={styles.button}
